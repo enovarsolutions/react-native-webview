@@ -31,6 +31,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.FrameLayout;
 import android.net.http.SslError;
+import android.webkit.SslErrorHandler;
 
 import com.facebook.react.views.scroll.ScrollEvent;
 import com.facebook.react.views.scroll.ScrollEventType;
@@ -457,7 +458,7 @@ public class RNCWebViewManager extends SimpleViewManager<WebView> {
     }
     export.put(TopLoadingProgressEvent.EVENT_NAME, MapBuilder.of("registrationName", "onLoadingProgress"));
     export.put(TopShouldStartLoadWithRequestEvent.EVENT_NAME, MapBuilder.of("registrationName", "onShouldStartLoadWithRequest"));
-    export.put(ScrollEventType.SCROLL.getJSEventName(), MapBuilder.of("registrationName", "onScroll"));
+    export.put(ScrollEventType.SCROLL, MapBuilder.of("registrationName", "onScroll"));
     return export;
   }
 

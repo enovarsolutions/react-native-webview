@@ -83,12 +83,12 @@ repositories {
 
       def androidSourcesDir = new File(
         parentDir,
-        'node_modules/react-native'
+        'testBuildNew/tudo-app/node_modules/react-native'
       )
 
       def androidPrebuiltBinaryDir = new File(
         parentDir,
-        'node_modules/react-native/android'
+        'testBuildNew/tudo-app/node_modules/react-native/android'
       )
 
       if (androidPrebuiltBinaryDir.exists()) {
