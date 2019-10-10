@@ -653,4 +653,9 @@ export interface WebViewSharedProps extends ViewProps {
    * Should caching be enabled. Default is true.
    */
   cacheEnabled?: boolean;
+
+  /**
+   * Should ignore SSL errors. Default is false.
+   */
+  ignoreSSLError?: boolean;
 }

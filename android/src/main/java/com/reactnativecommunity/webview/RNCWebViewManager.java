@@ -598,6 +598,14 @@ public class RNCWebViewManager extends SimpleViewManager<WebView> {
     protected @Nullable
     ReadableArray mUrlPrefixesForDefaultIntent;
 
+    public boolean isIgnoreSSL() {
+      return ignoreSSL;
+    }
+
+    public void setIgnoreSSL(boolean ignoreSSL) {
+      this.ignoreSSL = ignoreSSL;
+    }
+
     @Override
     public void onPageFinished(WebView webView, String url) {
       super.onPageFinished(webView, url);
