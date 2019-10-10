@@ -263,6 +263,13 @@ public class RNCWebViewManager extends SimpleViewManager<WebView> {
     view.getSettings().setJavaScriptEnabled(enabled);
   }
 
+  @ReactProp(name = "ignoreSSLError")
+  public void setIgnoreSSLError(WebView view, boolean enabled) {
+    view.getSettings().setDomStorageEnabled(enabled);
+    RNCWebViewClient client = ((RNCWebView) view).getRNCWebViewClient();
+    client.setIgnoreSSL(enabled);
+  }
+
   @ReactProp(name = "showsHorizontalScrollIndicator")
   public void setShowsHorizontalScrollIndicator(WebView view, boolean enabled) {
     view.setHorizontalScrollBarEnabled(enabled);
