@@ -24,6 +24,8 @@ import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.net.http.SslError;
+import android.webkit.SslErrorHandler;
 
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.LifecycleEventListener;
@@ -559,8 +561,17 @@ public class RNCWebViewManager extends SimpleViewManager<WebView> {
   protected static class RNCWebViewClient extends WebViewClient {
 
     protected boolean mLastLoadFailed = false;
+    protected boolean ignoreSSL = false;
     protected @Nullable
     ReadableArray mUrlPrefixesForDefaultIntent;
+
+    public boolean isIgnoreSSL() {
+      return ignoreSSL;
+    }
+
+    public void setIgnoreSSL(boolean ignoreSSL) {
+      this.ignoreSSL = ignoreSSL;
+    }
 
     @Override
     public void onPageFinished(WebView webView, String url) {
@@ -595,6 +606,53 @@ public class RNCWebViewManager extends SimpleViewManager<WebView> {
           view.getId(),
           createWebViewEvent(view, url)));
       return true;
+    }
+
+    @Override
+    public void onReceivedSslError(final WebView webView, final SslErrorHandler handler, final SslError error) {
+      if (ignoreSSL) {
+        handler.proceed();
+      } else {
+        handler.cancel();
+      }
+
+      int code = error.getPrimaryError();
+      String failingUrl = error.getUrl();
+      String description = "";
+
+      // https://developer.android.com/reference/android/net/http/SslError.html
+      switch (code) {
+        case SslError.SSL_DATE_INVALID:
+          description = "The date of the certificate is invalid";
+          break;
+        case SslError.SSL_EXPIRED:
+          description = "The certificate has expired";
+          break;
+        case SslError.SSL_IDMISMATCH:
+          description = "Hostname mismatch";
+          break;
+        case SslError.SSL_INVALID:
+          description = "A generic error occurred";
+          break;
+        case SslError.SSL_MAX_ERROR:
+          description = "The number of different SSL errors.";
+          break;
+        case SslError.SSL_NOTYETVALID:
+          description = "The certificate is not yet valid";
+          break;
+        case SslError.SSL_UNTRUSTED:
+          description = "The certificate authority is not trusted";
+          break;
+        default:
+          description = "Unknown SSL Error";
+          break;
+      }
+
+      this.onReceivedError(
+        webView,
+        code,
+        description,
+        failingUrl);
     }
 
 
