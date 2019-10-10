@@ -30,6 +30,7 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.FrameLayout;
+import android.net.http.SslError;
 
 import com.facebook.react.views.scroll.ScrollEvent;
 import com.facebook.react.views.scroll.ScrollEventType;
@@ -218,6 +219,13 @@ public class RNCWebViewManager extends SimpleViewManager<WebView> {
   @ReactProp(name = "javaScriptEnabled")
   public void setJavaScriptEnabled(WebView view, boolean enabled) {
     view.getSettings().setJavaScriptEnabled(enabled);
+  }
+
+  @ReactProp(name = "ignoreSSLError")
+  public void setIgnoreSSLError(WebView view, boolean enabled) {
+    view.getSettings().setDomStorageEnabled(enabled);
+    RNCWebViewClient client = ((RNCWebView) view).getRNCWebViewClient();
+    client.setIgnoreSSL(enabled);
   }
 
   @ReactProp(name = "showsHorizontalScrollIndicator")
@@ -586,6 +594,7 @@ public class RNCWebViewManager extends SimpleViewManager<WebView> {
   protected static class RNCWebViewClient extends WebViewClient {
 
     protected boolean mLastLoadFailed = false;
+    protected boolean ignoreSSL = false;
     protected @Nullable
     ReadableArray mUrlPrefixesForDefaultIntent;
 
@@ -622,6 +631,53 @@ public class RNCWebViewManager extends SimpleViewManager<WebView> {
           view.getId(),
           createWebViewEvent(view, url)));
       return true;
+    }
+
+    @Override
+    public void onReceivedSslError(final WebView webView, final SslErrorHandler handler, final SslError error) {
+      if (ignoreSSL) {
+        handler.proceed();
+      } else {
+        handler.cancel();
+      }
+
+      int code = error.getPrimaryError();
+      String failingUrl = error.getUrl();
+      String description = "";
+
+      // https://developer.android.com/reference/android/net/http/SslError.html
+      switch (code) {
+        case SslError.SSL_DATE_INVALID:
+          description = "The date of the certificate is invalid";
+          break;
+        case SslError.SSL_EXPIRED:
+          description = "The certificate has expired";
+          break;
+        case SslError.SSL_IDMISMATCH:
+          description = "Hostname mismatch";
+          break;
+        case SslError.SSL_INVALID:
+          description = "A generic error occurred";
+          break;
+        case SslError.SSL_MAX_ERROR:
+          description = "The number of different SSL errors.";
+          break;
+        case SslError.SSL_NOTYETVALID:
+          description = "The certificate is not yet valid";
+          break;
+        case SslError.SSL_UNTRUSTED:
+          description = "The certificate authority is not trusted";
+          break;
+        default:
+          description = "Unknown SSL Error";
+          break;
+      }
+
+      this.onReceivedError(
+        webView,
+        code,
+        description,
+        failingUrl);
     }
 
 
