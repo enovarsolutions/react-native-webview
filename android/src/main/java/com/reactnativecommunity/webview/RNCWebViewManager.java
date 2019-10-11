@@ -619,9 +619,10 @@ public class RNCWebViewManager extends SimpleViewManager<WebView> {
     public void onReceivedSslError(final WebView webView, final SslErrorHandler handler, final SslError error) {
       if (ignoreSSL) {
         handler.proceed();
-      } else {
-        handler.cancel();
+        return;
       }
+
+      handler.cancel();
 
       int code = error.getPrimaryError();
       String failingUrl = error.getUrl();
