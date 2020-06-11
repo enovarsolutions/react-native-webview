@@ -36,6 +36,8 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.FrameLayout;
+import android.net.http.SslError;
+import android.webkit.SslErrorHandler;
 
 import com.facebook.react.views.scroll.ScrollEvent;
 import com.facebook.react.views.scroll.ScrollEventType;
@@ -242,6 +244,13 @@ public class RNCWebViewManager extends SimpleViewManager<WebView> {
     view.getSettings().setJavaScriptEnabled(enabled);
   }
 
+  @ReactProp(name = "ignoreSSLError")
+  public void setIgnoreSSLError(WebView view, boolean enabled) {
+    view.getSettings().setDomStorageEnabled(enabled);
+    RNCWebViewClient client = ((RNCWebView) view).getRNCWebViewClient();
+    client.setIgnoreSSL(enabled);
+  }
+
   @ReactProp(name = "showsHorizontalScrollIndicator")
   public void setShowsHorizontalScrollIndicator(WebView view, boolean enabled) {
     view.setHorizontalScrollBarEnabled(enabled);
@@ -405,7 +414,7 @@ public class RNCWebViewManager extends SimpleViewManager<WebView> {
   public void setMessagingModuleName(WebView view, String moduleName) {
     ((RNCWebView) view).setMessagingModuleName(moduleName);
   }
-   
+
   @ReactProp(name = "incognito")
   public void setIncognito(WebView view, boolean enabled) {
     // Remove all previous cookies
@@ -655,7 +664,7 @@ public class RNCWebViewManager extends SimpleViewManager<WebView> {
         public Bitmap getDefaultVideoPoster() {
           return Bitmap.createBitmap(50, 50, Bitmap.Config.ARGB_8888);
         }
-        
+
         @Override
         public void onShowCustomView(View view, CustomViewCallback callback) {
           if (mVideoView != null) {
@@ -721,12 +730,21 @@ public class RNCWebViewManager extends SimpleViewManager<WebView> {
   protected static class RNCWebViewClient extends WebViewClient {
 
     protected boolean mLastLoadFailed = false;
+    protected boolean ignoreSSL = false;
     protected @Nullable
     ReadableArray mUrlPrefixesForDefaultIntent;
     protected @Nullable String ignoreErrFailedForThisURL = null;
 
     public void setIgnoreErrFailedForThisURL(@Nullable String url) {
       ignoreErrFailedForThisURL = url;
+    }
+
+    public boolean isIgnoreSSL() {
+      return ignoreSSL;
+    }
+
+    public void setIgnoreSSL(boolean ignoreSSL) {
+      this.ignoreSSL = ignoreSSL;
     }
 
     @Override
@@ -763,6 +781,54 @@ public class RNCWebViewManager extends SimpleViewManager<WebView> {
           view.getId(),
           createWebViewEvent(view, url)));
       return true;
+    }
+
+    @Override
+    public void onReceivedSslError(final WebView webView, final SslErrorHandler handler, final SslError error) {
+      if (ignoreSSL) {
+        handler.proceed();
+        return;
+      }
+
+      handler.cancel();
+
+      int code = error.getPrimaryError();
+      String failingUrl = error.getUrl();
+      String description = "";
+
+      // https://developer.android.com/reference/android/net/http/SslError.html
+      switch (code) {
+        case SslError.SSL_DATE_INVALID:
+          description = "The date of the certificate is invalid";
+          break;
+        case SslError.SSL_EXPIRED:
+          description = "The certificate has expired";
+          break;
+        case SslError.SSL_IDMISMATCH:
+          description = "Hostname mismatch";
+          break;
+        case SslError.SSL_INVALID:
+          description = "A generic error occurred";
+          break;
+        case SslError.SSL_MAX_ERROR:
+          description = "The number of different SSL errors.";
+          break;
+        case SslError.SSL_NOTYETVALID:
+          description = "The certificate is not yet valid";
+          break;
+        case SslError.SSL_UNTRUSTED:
+          description = "The certificate authority is not trusted";
+          break;
+        default:
+          description = "Unknown SSL Error";
+          break;
+      }
+
+      this.onReceivedError(
+        webView,
+        code,
+        description,
+        failingUrl);
     }
 
 

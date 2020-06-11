@@ -56,6 +56,7 @@
 @property (nonatomic, assign) BOOL javaScriptEnabled;
 @property (nonatomic, assign) BOOL allowFileAccessFromFileURLs;
 @property (nonatomic, assign) BOOL allowsLinkPreview;
+@property (nonatomic, assign) BOOL ignoreSSLError;
 @property (nonatomic, assign) BOOL showsHorizontalScrollIndicator;
 @property (nonatomic, assign) BOOL showsVerticalScrollIndicator;
 @property (nonatomic, assign) BOOL directionalLockEnabled;

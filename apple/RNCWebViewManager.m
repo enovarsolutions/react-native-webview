@@ -68,6 +68,7 @@ RCT_EXPORT_VIEW_PROPERTY(allowingReadAccessToURL, NSString)
 #if defined(__IPHONE_OS_VERSION_MAX_ALLOWED) && __IPHONE_OS_VERSION_MAX_ALLOWED >= 110000 /* __IPHONE_11_0 */
 RCT_EXPORT_VIEW_PROPERTY(contentInsetAdjustmentBehavior, UIScrollViewContentInsetAdjustmentBehavior)
 #endif
+RCT_EXPORT_VIEW_PROPERTY(ignoreSSLError, BOOL)
 
 /**
  * Expose methods to enable messaging the webview.
