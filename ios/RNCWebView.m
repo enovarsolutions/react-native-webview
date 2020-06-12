@@ -120,7 +120,7 @@ static NSDictionary* customCertificatesForHost;
 
 - (void)dealloc
 {
-  [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 /**
@@ -128,10 +128,10 @@ static NSDictionary* customCertificatesForHost;
  */
 - (WKWebView *)webView:(WKWebView *)webView createWebViewWithConfiguration:(WKWebViewConfiguration *)configuration forNavigationAction:(WKNavigationAction *)navigationAction windowFeatures:(WKWindowFeatures *)windowFeatures
 {
-  if (!navigationAction.targetFrame.isMainFrame) {
-    [webView loadRequest:navigationAction.request];
-  }
-  return nil;
+    if (!navigationAction.targetFrame.isMainFrame) {
+        [webView loadRequest:navigationAction.request];
+    }
+    return nil;
 }
 
 - (void)didMoveToWindow
@@ -199,7 +199,7 @@ static NSDictionary* customCertificatesForHost;
 
       WKUserScript *script = [[WKUserScript alloc] initWithSource:source injectionTime:WKUserScriptInjectionTimeAtDocumentStart forMainFrameOnly:YES];
       [wkWebViewConfig.userContentController addUserScript:script];
-        
+
       if (_injectedJavaScriptBeforeContentLoaded) {
         // If user has provided an injectedJavascript prop, execute it at the start of the document
         WKUserScript *injectedScript = [[WKUserScript alloc] initWithSource:_injectedJavaScriptBeforeContentLoaded injectionTime:WKUserScriptInjectionTimeAtDocumentStart forMainFrameOnly:YES];
@@ -209,12 +209,12 @@ static NSDictionary* customCertificatesForHost;
 
     wkWebViewConfig.allowsInlineMediaPlayback = _allowsInlineMediaPlayback;
 #if WEBKIT_IOS_10_APIS_AVAILABLE
-    wkWebViewConfig.mediaTypesRequiringUserActionForPlayback = _mediaPlaybackRequiresUserAction
-      ? WKAudiovisualMediaTypeAll
-      : WKAudiovisualMediaTypeNone;
-    wkWebViewConfig.dataDetectorTypes = _dataDetectorTypes;
+        wkWebViewConfig.mediaTypesRequiringUserActionForPlayback = _mediaPlaybackRequiresUserAction
+        ? WKAudiovisualMediaTypeAll
+        : WKAudiovisualMediaTypeNone;
+        wkWebViewConfig.dataDetectorTypes = _dataDetectorTypes;
 #else
-    wkWebViewConfig.mediaPlaybackRequiresUserAction = _mediaPlaybackRequiresUserAction;
+        wkWebViewConfig.mediaPlaybackRequiresUserAction = _mediaPlaybackRequiresUserAction;
 #endif
 
     if (_applicationNameForUserAgent) {
@@ -307,17 +307,17 @@ static NSDictionary* customCertificatesForHost;
     }
 #endif
 
-    [self addSubview:_webView];
-    [self setHideKeyboardAccessoryView: _savedHideKeyboardAccessoryView];
-    [self setKeyboardDisplayRequiresUserAction: _savedKeyboardDisplayRequiresUserAction];
-    [self visitSource];
-  }
+        [self addSubview:_webView];
+        [self setHideKeyboardAccessoryView: _savedHideKeyboardAccessoryView];
+        [self setKeyboardDisplayRequiresUserAction: _savedKeyboardDisplayRequiresUserAction];
+        [self visitSource];
+    }
 }
 
 // Update webview property when the component prop changes.
 - (void)setAllowsBackForwardNavigationGestures:(BOOL)allowsBackForwardNavigationGestures {
-  _allowsBackForwardNavigationGestures = allowsBackForwardNavigationGestures;
-  _webView.allowsBackForwardNavigationGestures = _allowsBackForwardNavigationGestures;
+    _allowsBackForwardNavigationGestures = allowsBackForwardNavigationGestures;
+    _webView.allowsBackForwardNavigationGestures = _allowsBackForwardNavigationGestures;
 }
 
 
@@ -375,17 +375,17 @@ static NSDictionary* customCertificatesForHost;
         maxContentOffset = 0;
     }
     if (scrollView.contentOffset.y > maxContentOffset) {
-      // https://stackoverflow.com/a/9637807/824966
-      [UIView animateWithDuration:.25 animations:^{
-          scrollView.contentOffset = CGPointMake(0, maxContentOffset);
-      }];
+        // https://stackoverflow.com/a/9637807/824966
+        [UIView animateWithDuration:.25 animations:^{
+            scrollView.contentOffset = CGPointMake(0, maxContentOffset);
+        }];
     }
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change context:(void *)context{
     if ([keyPath isEqual:@"estimatedProgress"] && object == self.webView) {
         if(_onLoadingProgress){
-             NSMutableDictionary<NSString *, id> *event = [self baseEvent];
+            NSMutableDictionary<NSString *, id> *event = [self baseEvent];
             [event addEntriesFromDictionary:@{@"progress":[NSNumber numberWithDouble:self.webView.estimatedProgress]}];
             _onLoadingProgress(event);
         }
@@ -396,15 +396,15 @@ static NSDictionary* customCertificatesForHost;
 
 - (void)setBackgroundColor:(UIColor *)backgroundColor
 {
-  _savedBackgroundColor = backgroundColor;
-  if (_webView == nil) {
-    return;
-  }
+    _savedBackgroundColor = backgroundColor;
+    if (_webView == nil) {
+        return;
+    }
 
-  CGFloat alpha = CGColorGetAlpha(backgroundColor.CGColor);
-  self.opaque = _webView.opaque = (alpha == 1.0);
-  _webView.scrollView.backgroundColor = backgroundColor;
-  _webView.backgroundColor = backgroundColor;
+    CGFloat alpha = CGColorGetAlpha(backgroundColor.CGColor);
+    self.opaque = _webView.opaque = (alpha == 1.0);
+    _webView.scrollView.backgroundColor = backgroundColor;
+    _webView.backgroundColor = backgroundColor;
 }
 
 #if defined(__IPHONE_OS_VERSION_MAX_ALLOWED) && __IPHONE_OS_VERSION_MAX_ALLOWED >= 110000 /* __IPHONE_11_0 */
@@ -428,7 +428,7 @@ static NSDictionary* customCertificatesForHost;
  *   - window.webkit.messageHandlers[MessageHandlerName].postMessage
  */
 - (void)userContentController:(WKUserContentController *)userContentController
-       didReceiveScriptMessage:(WKScriptMessage *)message
+      didReceiveScriptMessage:(WKScriptMessage *)message
 {
   if ([message.name isEqualToString:HistoryShimName]) {
     if (_onLoadingFinish) {
@@ -447,13 +447,13 @@ static NSDictionary* customCertificatesForHost;
 
 - (void)setSource:(NSDictionary *)source
 {
-  if (![_source isEqualToDictionary:source]) {
-    _source = [source copy];
+    if (![_source isEqualToDictionary:source]) {
+        _source = [source copy];
 
-    if (_webView != nil) {
-      [self visitSource];
+        if (_webView != nil) {
+            [self visitSource];
+        }
     }
-  }
 }
 
 - (void)setAllowingReadAccessToURL:(NSString *)allowingReadAccessToURL
@@ -469,17 +469,17 @@ static NSDictionary* customCertificatesForHost;
 
 - (void)setContentInset:(UIEdgeInsets)contentInset
 {
-  _contentInset = contentInset;
-  [RCTView autoAdjustInsetsForView:self
-                    withScrollView:_webView.scrollView
-                      updateOffset:NO];
+    _contentInset = contentInset;
+    [RCTView autoAdjustInsetsForView:self
+                      withScrollView:_webView.scrollView
+                        updateOffset:NO];
 }
 
 - (void)refreshContentInset
 {
-  [RCTView autoAdjustInsetsForView:self
-                    withScrollView:_webView.scrollView
-                      updateOffset:YES];
+    [RCTView autoAdjustInsetsForView:self
+                      withScrollView:_webView.scrollView
+                        updateOffset:YES];
 }
 
 - (void)visitSource
@@ -529,20 +529,15 @@ static NSDictionary* customCertificatesForHost;
     }
 
     UIView* subview;
-
     for (UIView* view in _webView.scrollView.subviews) {
         if([[view.class description] hasPrefix:@"WK"])
             subview = view;
     }
-
     if(subview == nil) return;
-
     Class class = subview.class;
-
     NSOperatingSystemVersion iOS_11_3_0 = (NSOperatingSystemVersion){11, 3, 0};
     NSOperatingSystemVersion iOS_12_2_0 = (NSOperatingSystemVersion){12, 2, 0};
     NSOperatingSystemVersion iOS_13_0_0 = (NSOperatingSystemVersion){13, 0, 0};
-
     Method method;
     IMP override;
 
@@ -581,7 +576,6 @@ static NSDictionary* customCertificatesForHost;
             ((void (*)(id, SEL, void*, BOOL, BOOL, id))original)(me, selector, arg0, TRUE, arg2, arg3);
         });
     }
-
     method_setImplementation(method, override);
 }
 
@@ -624,21 +618,21 @@ static NSDictionary* customCertificatesForHost;
 
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
 {
-  scrollView.decelerationRate = _decelerationRate;
+    scrollView.decelerationRate = _decelerationRate;
 }
 
 - (void)setScrollEnabled:(BOOL)scrollEnabled
 {
-  _scrollEnabled = scrollEnabled;
-  _webView.scrollView.scrollEnabled = scrollEnabled;
+    _scrollEnabled = scrollEnabled;
+    _webView.scrollView.scrollEnabled = scrollEnabled;
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
-  // Don't allow scrolling the scrollView.
-  if (!_scrollEnabled) {
-    scrollView.bounds = _webView.bounds;
-  }
+    // Don't allow scrolling the scrollView.
+    if (!_scrollEnabled) {
+        scrollView.bounds = _webView.bounds;
+    }
   else if (_onScroll != nil) {
     NSDictionary *event = @{
       @"contentOffset": @{
@@ -685,37 +679,37 @@ static NSDictionary* customCertificatesForHost;
 
 - (void)postMessage:(NSString *)message
 {
-  NSDictionary *eventInitDict = @{@"data": message};
-  NSString *source = [NSString
-    stringWithFormat:@"window.dispatchEvent(new MessageEvent('message', %@));",
-    RCTJSONStringify(eventInitDict, NULL)
-  ];
-  [self injectJavaScript: source];
+    NSDictionary *eventInitDict = @{@"data": message};
+    NSString *source = [NSString
+                        stringWithFormat:@"window.dispatchEvent(new MessageEvent('message', %@));",
+                        RCTJSONStringify(eventInitDict, NULL)
+                        ];
+    [self injectJavaScript: source];
 }
 
 - (void)layoutSubviews
 {
-  [super layoutSubviews];
+    [super layoutSubviews];
 
-  // Ensure webview takes the position and dimensions of RNCWebView
-  _webView.frame = self.bounds;
+    // Ensure webview takes the position and dimensions of RNCWebView
+    _webView.frame = self.bounds;
   _webView.scrollView.contentInset = _contentInset;
 }
 
 - (NSMutableDictionary<NSString *, id> *)baseEvent
 {
-  NSDictionary *event = @{
-    @"url": _webView.URL.absoluteString ?: @"",
-    @"title": _webView.title ?: @"",
-    @"loading" : @(_webView.loading),
-    @"canGoBack": @(_webView.canGoBack),
-    @"canGoForward" : @(_webView.canGoForward)
-  };
-  return [[NSMutableDictionary alloc] initWithDictionary: event];
+    NSDictionary *event = @{
+                            @"url": _webView.URL.absoluteString ?: @"",
+                            @"title": _webView.title ?: @"",
+                            @"loading" : @(_webView.loading),
+                            @"canGoBack": @(_webView.canGoBack),
+                            @"canGoForward" : @(_webView.canGoForward)
+                            };
+    return [[NSMutableDictionary alloc] initWithDictionary: event];
 }
 
 + (void)setClientAuthenticationCredential:(nullable NSURLCredential*)credential {
-  clientAuthenticationCredential = credential;
+    clientAuthenticationCredential = credential;
 }
 
 + (void)setCustomCertificatesForHost:(nullable NSDictionary*)certificates {
@@ -729,6 +723,15 @@ static NSDictionary* customCertificatesForHost;
     NSString* host = nil;
     if (webView.URL != nil) {
         host = webView.URL.host;
+    }
+    if (_ignoreSSLError) {
+        NSLog(@"Allow all");
+        SecTrustRef serverTrust = challenge.protectionSpace.serverTrust;
+        CFDataRef exceptions = SecTrustCopyExceptions (serverTrust);
+        SecTrustSetExceptions (serverTrust, exceptions);
+        CFRelease (exceptions);
+        completionHandler (NSURLSessionAuthChallengeUseCredential, [NSURLCredential credentialForTrust:serverTrust]);
+        return;
     }
     if ([[challenge protectionSpace] authenticationMethod] == NSURLAuthenticationMethodClientCertificate) {
         completionHandler(NSURLSessionAuthChallengeUseCredential, clientAuthenticationCredential);
@@ -761,8 +764,8 @@ static NSDictionary* customCertificatesForHost;
 #pragma mark - WKNavigationDelegate methods
 
 /**
-* alert
-*/
+ * alert
+ */
 - (void)webView:(WKWebView *)webView runJavaScriptAlertPanelWithMessage:(NSString *)message initiatedByFrame:(WKFrameInfo *)frame completionHandler:(void (^)(void))completionHandler
 {
     UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"" message:message preferredStyle:UIAlertControllerStyleAlert];
@@ -774,8 +777,8 @@ static NSDictionary* customCertificatesForHost;
 }
 
 /**
-* confirm
-*/
+ * confirm
+ */
 - (void)webView:(WKWebView *)webView runJavaScriptConfirmPanelWithMessage:(NSString *)message initiatedByFrame:(WKFrameInfo *)frame completionHandler:(void (^)(BOOL))completionHandler{
     UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"" message:message preferredStyle:UIAlertControllerStyleAlert];
     [alert addAction:[UIAlertAction actionWithTitle:@"Ok" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
@@ -788,8 +791,8 @@ static NSDictionary* customCertificatesForHost;
 }
 
 /**
-* prompt
-*/
+ * prompt
+ */
 - (void)webView:(WKWebView *)webView runJavaScriptTextInputPanelWithPrompt:(NSString *)prompt defaultText:(NSString *)defaultText initiatedByFrame:(WKFrameInfo *)frame completionHandler:(void (^)(NSString *))completionHandler{
     UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"" message:prompt preferredStyle:UIAlertControllerStyleAlert];
     [alert addTextFieldWithConfigurationHandler:^(UITextField *textField) {
@@ -819,31 +822,31 @@ static NSDictionary* customCertificatesForHost;
  * topViewControllerWithRootViewController
  */
 -(UIViewController *)topViewControllerWithRootViewController:(UIViewController *)viewController{
-  if (viewController==nil) return nil;
-  if (viewController.presentedViewController!=nil) {
-    return [self topViewControllerWithRootViewController:viewController.presentedViewController];
-  } else if ([viewController isKindOfClass:[UITabBarController class]]){
-    return [self topViewControllerWithRootViewController:[(UITabBarController *)viewController selectedViewController]];
-  } else if ([viewController isKindOfClass:[UINavigationController class]]){
-    return [self topViewControllerWithRootViewController:[(UINavigationController *)viewController visibleViewController]];
-  } else {
-    return viewController;
-  }
+    if (viewController==nil) return nil;
+    if (viewController.presentedViewController!=nil) {
+        return [self topViewControllerWithRootViewController:viewController.presentedViewController];
+    } else if ([viewController isKindOfClass:[UITabBarController class]]){
+        return [self topViewControllerWithRootViewController:[(UITabBarController *)viewController selectedViewController]];
+    } else if ([viewController isKindOfClass:[UINavigationController class]]){
+        return [self topViewControllerWithRootViewController:[(UINavigationController *)viewController visibleViewController]];
+    } else {
+        return viewController;
+    }
 }
 /**
  * getCurrentWindow
  */
 -(UIWindow *)getCurrentWindow{
-  UIWindow *window = [UIApplication sharedApplication].keyWindow;
-  if (window.windowLevel!=UIWindowLevelNormal) {
-    for (UIWindow *wid in [UIApplication sharedApplication].windows) {
-      if (window.windowLevel==UIWindowLevelNormal) {
-        window = wid;
-        break;
-      }
+    UIWindow *window = [UIApplication sharedApplication].keyWindow;
+    if (window.windowLevel!=UIWindowLevelNormal) {
+        for (UIWindow *wid in [UIApplication sharedApplication].windows) {
+            if (window.windowLevel==UIWindowLevelNormal) {
+                window = wid;
+                break;
+            }
+        }
     }
-  }
-  return window;
+    return window;
 }
 
 
@@ -940,7 +943,7 @@ static NSDictionary* customCertificatesForHost;
         _onHttpError(event);
       }
     }
-  }  
+  }
 
   decisionHandler(WKNavigationResponsePolicyAllow);
 }
@@ -1016,64 +1019,64 @@ static NSDictionary* customCertificatesForHost;
 
 - (void)injectJavaScript:(NSString *)script
 {
-  [self evaluateJS: script thenCall: nil];
+    [self evaluateJS: script thenCall: nil];
 }
 
 - (void)goForward
 {
-  [_webView goForward];
+    [_webView goForward];
 }
 
 - (void)goBack
 {
-  [_webView goBack];
+    [_webView goBack];
 }
 
 - (void)reload
 {
-  /**
-   * When the initial load fails due to network connectivity issues,
-   * [_webView reload] doesn't reload the webpage. Therefore, we must
-   * manually call [_webView loadRequest:request].
-   */
-  NSURLRequest *request = [self requestForSource:self.source];
+    /**
+     * When the initial load fails due to network connectivity issues,
+     * [_webView reload] doesn't reload the webpage. Therefore, we must
+     * manually call [_webView loadRequest:request].
+     */
+    NSURLRequest *request = [self requestForSource:self.source];
 
-  if (request.URL && !_webView.URL.absoluteString.length) {
-    [_webView loadRequest:request];
-  } else {
-    [_webView reload];
-  }
+    if (request.URL && !_webView.URL.absoluteString.length) {
+        [_webView loadRequest:request];
+    } else {
+        [_webView reload];
+    }
 }
 
 - (void)stopLoading
 {
-  [_webView stopLoading];
+    [_webView stopLoading];
 }
 
 - (void)setBounces:(BOOL)bounces
 {
-  _bounces = bounces;
-  _webView.scrollView.bounces = bounces;
+    _bounces = bounces;
+    _webView.scrollView.bounces = bounces;
 }
 
 - (NSURLRequest *)requestForSource:(id)json {
-  NSURLRequest *request = [RCTConvert NSURLRequest:self.source];
+    NSURLRequest *request = [RCTConvert NSURLRequest:self.source];
 
-  // If sharedCookiesEnabled we automatically add all application cookies to the
-  // http request. This is automatically done on iOS 11+ in the WebView constructor.
-  // Se we need to manually add these shared cookies here only for iOS versions < 11.
-  if (_sharedCookiesEnabled) {
-    if (@available(iOS 11.0, *)) {
-      // see WKWebView initialization for added cookies
-    } else {
-      NSArray *cookies = [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookiesForURL:request.URL];
-      NSDictionary<NSString *, NSString *> *cookieHeader = [NSHTTPCookie requestHeaderFieldsWithCookies:cookies];
-      NSMutableURLRequest *mutableRequest = [request mutableCopy];
-      [mutableRequest setAllHTTPHeaderFields:cookieHeader];
-      return mutableRequest;
+    // If sharedCookiesEnabled we automatically add all application cookies to the
+    // http request. This is automatically done on iOS 11+ in the WebView constructor.
+    // Se we need to manually add these shared cookies here only for iOS versions < 11.
+    if (_sharedCookiesEnabled) {
+        if (@available(iOS 11.0, *)) {
+            // see WKWebView initialization for added cookies
+        } else {
+            NSArray *cookies = [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookiesForURL:request.URL];
+            NSDictionary<NSString *, NSString *> *cookieHeader = [NSHTTPCookie requestHeaderFieldsWithCookies:cookies];
+            NSMutableURLRequest *mutableRequest = [request mutableCopy];
+            [mutableRequest setAllHTTPHeaderFields:cookieHeader];
+            return mutableRequest;
+        }
     }
-  }
-  return request;
+    return request;
 }
 
 @end
